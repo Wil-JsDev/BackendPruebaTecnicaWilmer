@@ -8,7 +8,7 @@ public static class DependencyInjection
 {
     public static void AddSharedLayer(this IServiceCollection services)
     {
-        services.AddScoped<IAuthorApiService, AuthorApiService>();
-        services.AddScoped<IBooksApiService, BooksApiService>();
+        services.AddHttpClient<IAuthorApiService, AuthorApiService>();
+        services.AddHttpClient<IBooksApiService, BooksApiService>();
     }
 }
