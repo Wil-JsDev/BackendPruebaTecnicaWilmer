@@ -11,7 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
+      <ProjectReference Include="..\BackendPruebaTecnica.Application\BackendPruebaTecnica.Application.csproj" />
+      <ProjectReference Include="..\BackendPruebaTecnica.Infrastructure.Shared\BackendPruebaTecnica.Infrastructure.Shared.csproj" />
     </ItemGroup>
 
 </Project>
