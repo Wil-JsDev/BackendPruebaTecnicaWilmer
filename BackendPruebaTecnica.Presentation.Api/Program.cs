@@ -13,7 +13,22 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddApplicationLayer();
 builder.Services.AddSharedLayer();
 
+builder.Services.AddSwaggerGen();
+ builder.Services.AddCors(
+            opt =>
+                opt.AddPolicy(
+                    name: "_QuickTravelCors",
+                    builder =>
+                    {
+                        builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
+                    }
+                )
+        );
+
+
 var app = builder.Build();
+
+app.UseCors("_QuickTravelCors");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
