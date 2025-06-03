@@ -69,5 +69,15 @@ public class AuthorController : Controller
         
         return BadRequest(result.Error);
     }
+
+    [HttpGet("/books/{idBook}")]
+    public async Task<IActionResult> GetAuthorsByBookId(int idBook, CancellationToken cancellationToken)
+    {
+        var result = await _authorService.GetAuthorByBookdIdAsync(idBook, cancellationToken);
+        if (result.IsSuccess)
+            return Ok(result.Value);
+        
+        return NotFound(result.Error);
+    }
     
 }

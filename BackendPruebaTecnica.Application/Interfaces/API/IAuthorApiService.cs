@@ -14,4 +14,5 @@ public interface IAuthorApiService
 
     Task<bool> DeleteAuthorAsync(int id, CancellationToken cancellationToken);
 
+    Task<IEnumerable<AuthorDTOs>> GetAuthorsByBookIdAsync(int idBook, CancellationToken cancellationToken);
 }

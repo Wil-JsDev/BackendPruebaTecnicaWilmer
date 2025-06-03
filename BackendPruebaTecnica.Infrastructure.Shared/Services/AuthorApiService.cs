@@ -43,4 +43,15 @@ public class AuthorApiService : IAuthorApiService
         var response = await _httpClient.DeleteAsync($"https://fakerestapi.azurewebsites.net/api/v1/Authors/{id}", cancellationToken);
         return response.IsSuccessStatusCode;
     }
+    public async Task<IEnumerable<AuthorDTOs>> GetAuthorsByBookIdAsync(int idBook, CancellationToken cancellationToken)
+    {
+        var response = await _httpClient.GetStringAsync("https://fakerestapi.azurewebsites.net/api/v1/Authors",  cancellationToken: cancellationToken);
+
+        if (string.IsNullOrWhiteSpace(response))
+            return Enumerable.Empty<AuthorDTOs>();
+
+        var authors = JsonConvert.DeserializeObject<IEnumerable<AuthorDTOs>>(response) ?? Enumerable.Empty<AuthorDTOs>();
+
+        return authors.Where(author => author.IdBook == idBook);
+    }
 }

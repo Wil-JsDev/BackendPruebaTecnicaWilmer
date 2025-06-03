@@ -8,10 +8,11 @@ namespace BackendPruebaTecnica.Application.Services;
 public class AuthorService : IAuthorService
 {
     private IAuthorApiService  _authorApiService;
-
-    public AuthorService(IAuthorApiService authorApiService)
+    private IBooksApiService  _booksApiService;
+    public AuthorService(IAuthorApiService authorApiService,  IBooksApiService booksApiService)
     {
         _authorApiService = authorApiService;
+        _booksApiService = booksApiService;
     }
     
     public async Task<ResultT<PagedResult<AuthorDTOs>>> GetPagedAuthors(int pageNumber, int pageSize,CancellationToken cancellationToken)
@@ -122,5 +123,32 @@ public class AuthorService : IAuthorService
         }
 
         return ResultT<string>.Success($"Author with ID {id} was successfully deleted.");
+    }
+
+    public async Task<ResultT<IEnumerable<AuthorDTOs>>> GetAuthorByBookdIdAsync(int idBook, CancellationToken cancellationToken)
+    {
+        var bookExist = await _booksApiService.GetBookByIdAsync(idBook, cancellationToken);
+        if (bookExist == null)
+        {
+            return ResultT<IEnumerable<AuthorDTOs>>.Failure(
+                Error.NotFound("404", $"Book with ID {idBook} was not found."));
+        }
+
+        var listAuthorDtOsEnumerable = await _authorApiService.GetAuthorsByBookIdAsync(idBook, cancellationToken);
+        if (!listAuthorDtOsEnumerable.Any())
+        {
+            return ResultT<IEnumerable<AuthorDTOs>>.Failure(
+                Error.Failure("400", $"No authors were found for the book with ID {idBook}."));
+        }
+
+        var authors = listAuthorDtOsEnumerable.Select(x => new AuthorDTOs
+        (
+            Id: x.Id,
+            IdBook: x.IdBook,
+            FirstName: x.FirstName,
+            LastName: x.LastName
+        ));
+        
+        return ResultT<IEnumerable<AuthorDTOs>>.Success(authors);
     }
 }
